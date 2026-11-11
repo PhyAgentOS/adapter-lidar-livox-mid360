@@ -1,0 +1,11 @@
+ros_domain_id: 91
+cloud_topic: /lidar/raw/points
+imu_topic: /lidar/raw/imu
+imu_acceleration_unit: g
+clock_confirmed: false
+startup_timeout_seconds: 15
+stream_timeout_seconds: 2
+clock:
+  domain: livox_device_uptime
+  mapping_id: set-after-clock-check
+  offset_ns: 0

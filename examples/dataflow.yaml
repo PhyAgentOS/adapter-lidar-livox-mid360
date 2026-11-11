@@ -1,0 +1,10 @@
+nodes:
+- id: livox_mid360
+  path: livox_mid360
+  args: --config ../config/sensor.example.yaml
+  inputs:
+    tick: dora/timer/millis/20
+  outputs:
+  - point_cloud
+  - imu
+  - status
