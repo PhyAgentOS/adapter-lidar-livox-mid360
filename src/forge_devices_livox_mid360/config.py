@@ -29,7 +29,12 @@ def load_config(path: str | Path | None = None) -> dict:
     value = yaml.safe_load(source.read_text(encoding="utf-8"))
     if not isinstance(value, dict):
         raise ValueError("configuration must be a mapping")
-    missing = [key for key in REQUIRED if key not in value]
+    required = [
+        k
+        for k in REQUIRED
+        if not (value.get("managed_driver") and k in ("clock", "clock_confirmed"))
+    ]
+    missing = [key for key in required if key not in value]
     if missing:
         raise ValueError(f"missing configuration fields: {', '.join(missing)}")
     domain = value["ros_domain_id"]

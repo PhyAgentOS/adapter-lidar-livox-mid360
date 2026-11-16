@@ -13,6 +13,13 @@ from .codec import SensorClock, encode_cloud, encode_imu
 
 
 def run(config: dict) -> None:
+    from .managed import capture
+
+    with capture(config) as active:
+        _run(active)
+
+
+def _run(config: dict) -> None:
     if config.get("clock_confirmed") is not True:
         raise ValueError("verify sensor clock mapping and set clock_confirmed: true")
     clock = SensorClock(**config["clock"])
@@ -82,6 +89,9 @@ def run(config: dict) -> None:
             # A timer keeps the event loop alive; process callbacks without a ROS thread.
             for _ in range(16):
                 rclpy.spin_once(ros, timeout_sec=0.0)
+            owned = config.get("_owned_driver")
+            if owned is not None and owned.poll() is not None:
+                raise RuntimeError("owned Livox driver exited")
             now = time.monotonic()
             for stream in ("point_cloud", "imu"):
                 if stream not in last_received:
